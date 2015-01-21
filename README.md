@@ -20,7 +20,7 @@ Run the project. It should Just Work!
 
 There's pre built functionality for Parse under this Project, but should you need to add anything else:
 
-### On `AMGParseSampleSource.h`, add a new value to `ParseSampleEnum`, for example `MY_NEW_AWESEOME_SAMPLE`:
+ On `AMGParseSampleSource.h`, add a new value to `ParseSampleEnum`, for example `MY_NEW_AWESEOME_SAMPLE`:
 
 ```objective-c
 typedef enum {
@@ -45,7 +45,7 @@ typedef enum {
 } ParseSampleEnum;
 ```
 
-### On `AMGParseSampleSource.m`, modify `-(void)setupSections`:
+ On `AMGParseSampleSource.m`, modify `-(void)setupSections`:
 ```objective-c
     NSArray *sections = @[@"Login", @"Events / Analytics", @"ACL", @"PFObjects", @"Queries", @"LDS", @"My New Awesome Section"];
     
@@ -61,7 +61,7 @@ typedef enum {
       };
 ```
 
-### On `AMGParseSampleSource.m`, add a new sample on `- (void)executeSample:(NSInteger)sampleIndex`:
+ On `AMGParseSampleSource.m`, add a new sample on `- (void)executeSample:(NSInteger)sampleIndex`:
 
 ```objective-c
 switch(sampleIndex):
@@ -70,4 +70,4 @@ switch(sampleIndex):
 }
 ```
 
-### Run. You should see your new section created on the UI, and when tapping on it, you will get a Log saying `Hello World!`
+ Run. You should see your new section created on the UI, and when tapping on it, you will get a Log saying `Hello World!`
