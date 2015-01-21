@@ -6,21 +6,21 @@ DSE Parse iOS sample project with extendable UI.
 
 I am assuming you already have a Facebook Application, and a Parse application with your Facebook Application credentials set up. 
 
-1. Modify `AMGAppDelegate.m` so it includes your Parse Credentials.
+Modify `AMGAppDelegate.m` so it includes your Parse Credentials.
 
 ```objective-c
     [Parse setApplicationId:@"YOUR_APP_ID"
                   clientKey:@"YOUR_CLIENT_KEY"];
 ```
 
-2. Modify `dse-parse-ios-Info.plist` to include your Facebook Applciation credentials under `FacebookAppID` and `URL Types`, and your Facebook Application Name under `FacebookDisplayName`
-3. Run the project. It should Just Work!
+Modify `dse-parse-ios-Info.plist` to include your Facebook Applciation credentials under `FacebookAppID` and `URL Types`, and your Facebook Application Name under `FacebookDisplayName`.
+Run the project. It should Just Work!
 
 ## Extending the UI
 
 There's pre built functionality for Parse under this Project, but should you need to add anything else:
 
-1. On `AMGParseSampleSource.h`, add a new value to `ParseSampleEnum`, for example `MY_NEW_AWESEOME_SAMPLE`:
+### On `AMGParseSampleSource.h`, add a new value to `ParseSampleEnum`, for example `MY_NEW_AWESEOME_SAMPLE`:
 
 ```objective-c
 typedef enum {
@@ -45,7 +45,7 @@ typedef enum {
 } ParseSampleEnum;
 ```
 
-2. On `AMGParseSampleSource.m`, modify `-(void)setupSections`:
+### On `AMGParseSampleSource.m`, modify `-(void)setupSections`:
 ```objective-c
     NSArray *sections = @[@"Login", @"Events / Analytics", @"ACL", @"PFObjects", @"Queries", @"LDS", @"My New Awesome Section"];
     
@@ -61,7 +61,7 @@ typedef enum {
       };
 ```
 
-3. On `AMGParseSampleSource.m`, add a new sample on `- (void)executeSample:(NSInteger)sampleIndex`:
+### On `AMGParseSampleSource.m`, add a new sample on `- (void)executeSample:(NSInteger)sampleIndex`:
 
 ```objective-c
 switch(sampleIndex):
@@ -70,4 +70,4 @@ switch(sampleIndex):
 }
 ```
 
-4. Run. You should see your new section created on the UI, and when tapping on it, you will get a Log saying `Hello World!`
+### Run. You should see your new section created on the UI, and when tapping on it, you will get a Log saying `Hello World!`
