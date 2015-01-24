@@ -56,7 +56,7 @@ static NSMutableArray *mutableSections = nil;
  */
 - (void)setupSections {
     mutableSections = [[NSMutableArray alloc] init];
-    NSArray *sections = @[@"Login", @"Events / Analytics", @"ACL", @"PFObjects", @"Queries", @"LDS"];
+    NSArray *sections = @[@"Login", @"Events / Analytics", @"ACL", @"PFObjects", @"Queries", @"LDS", @"Pointers", @"Random"];
     
     NSDictionary *samples =
     @{
@@ -65,7 +65,9 @@ static NSMutableArray *mutableSections = nil;
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"ACL Pinning Test"]
+      @"LDS" : @[@"ACL Pinning Test"],
+      @"Pointers": @[@"Cloud Code Pointer Test"],
+      @"Random" : @[@"BC / AD Dates Test"]
       };
     
     for (NSString *section in sections) {
@@ -347,6 +349,31 @@ static NSMutableArray *mutableSections = nil;
                 }
             }];
             
+            break;
+        }
+            
+        case CLOUD_CODE_POINTER_TEST: {
+            NSLog(@"Cloud code pointer test");
+            [PFCloud callFunctionInBackground:@"createObjectWithPointer" withParameters:@{} block:^(id object, NSError *error) {
+                PFObject *objectWithPointer = (PFObject *)object;
+                
+                NSLog(@"randomColumn Value %@", objectWithPointer[@"randomColumn"]);
+                PFObject *aclTest = objectWithPointer[@"aclTestObject"];
+                NSLog(@"aclTest isDataAvailable %@", aclTest.isDataAvailable);
+            }];
+            break;
+        }
+        case BC_AD_DATES: {
+            NSLog(@"Testing BC/AD Dates");
+            
+            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+            NSDateComponents *components = [[NSDateComponents alloc] init];
+            [components setYear:0063];
+            [components setMonth:9];
+            [components setDay:23];
+            
+            NSDate *bc_date = [calendar dateFromComponents:components];
+            NSLog(@"BC date es %@", bc_date);
             break;
         }
 

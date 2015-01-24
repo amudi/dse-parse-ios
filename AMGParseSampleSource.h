@@ -27,7 +27,9 @@ typedef enum {
     QUERY_FIRST_OBJECT,
     QUERY_FIRST_OBJECT_USING_CLASS,
     QUERY_COMPOUND,
-    LDS_PINNING
+    LDS_PINNING,
+    CLOUD_CODE_POINTER_TEST,
+    BC_AD_DATES
 } ParseSampleEnum;
 
 + (instancetype)sharedSource;
