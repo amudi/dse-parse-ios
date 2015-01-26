@@ -402,10 +402,14 @@ static NSMutableArray *mutableSections = nil;
         case BC_AD_DATES_RETRIEVING: {
             NSLog(@"Retrieving ACBCDates");
             PFQuery *acBcQuery = [PFQuery queryWithClassName:@"ACBCDate"];
+
+            NSString *dateFormat = @"MMMM d, yyyy GGG";
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:dateFormat];
             [acBcQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 if (!error) {
                     for (PFObject *parseDate in objects) {
-                        NSLog(@"%@ : %@", parseDate[@"name"], parseDate[@"savedDate"]);
+                        NSLog(@"%@ : %@", parseDate[@"name"], [dateFormatter stringFromDate:parseDate[@"savedDate"]]);
                     }
                 } else {
                     NSLog(@"There was an error retrieving dates: %@", [error description]);
