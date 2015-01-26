@@ -67,7 +67,7 @@ static NSMutableArray *mutableSections = nil;
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
       @"LDS" : @[@"ACL Pinning Test"],
       @"Pointers": @[@"Cloud Code Pointer Test"],
-      @"Random" : @[@"BC / AD Dates Test"]
+      @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
       };
     
     for (NSString *section in sections) {
@@ -363,17 +363,55 @@ static NSMutableArray *mutableSections = nil;
             }];
             break;
         }
-        case BC_AD_DATES: {
+            
+        case BC_AD_DATES_SAVING: {
             NSLog(@"Testing BC/AD Dates");
             
-            NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-            NSDateComponents *components = [[NSDateComponents alloc] init];
-            [components setYear:0063];
-            [components setMonth:9];
-            [components setDay:23];
+            NSString *dateFormat = @"MMMM d, yyyy GGG";
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:dateFormat];
             
-            NSDate *bc_date = [calendar dateFromComponents:components];
-            NSLog(@"BC date es %@", bc_date);
+            NSArray *dateA = @[@"March 15, 44 BC",@"April 15, 62 AD",@"June 15, 101 AD"];
+            NSMutableDictionary *dateMD = [NSMutableDictionary dictionaryWithCapacity:3];
+            
+            NSLog(@"Show strings and resulting dates");
+            for (NSString *string in dateA) {
+                NSDate *date = [dateFormatter dateFromString:string];
+                NSLog(@"NSDate instance for string '%@' = %@\n       formatted = %@",string,date,[dateFormatter stringFromDate:date]);
+                [dateMD setObject:date forKey:string];
+            }
+            
+            // Saving to Parse
+            /*
+            for (NSString *key in dateMD) {
+                NSDate *old_date = [dateMD objectForKey:key];
+                
+                
+                PFObject *acBcTest = [[PFObject alloc] initWithClassName:@"ACBCDate"];
+                acBcTest[@"name"] = [NSString stringWithFormat:@"%@%@", @"test_", key];
+                acBcTest[@"savedDate"] = old_date;
+                
+                NSLog(@"Before Saving %@", acBcTest[@"savedDate"]);
+                [acBcTest saveInBackground];
+            }
+            */
+            
+            break;
+        }
+            
+        case BC_AD_DATES_RETRIEVING: {
+            NSLog(@"Retrieving ACBCDates");
+            PFQuery *acBcQuery = [PFQuery queryWithClassName:@"ACBCDate"];
+            [acBcQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                if (!error) {
+                    for (PFObject *parseDate in objects) {
+                        NSLog(@"%@ : %@", parseDate[@"name"], parseDate[@"savedDate"]);
+                    }
+                } else {
+                    NSLog(@"There was an error retrieving dates: %@", [error description]);
+                }
+            }];
+            
             break;
         }
 

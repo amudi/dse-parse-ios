@@ -29,7 +29,8 @@ typedef enum {
     QUERY_COMPOUND,
     LDS_PINNING,
     CLOUD_CODE_POINTER_TEST,
-    BC_AD_DATES
+    BC_AD_DATES_SAVING,
+    BC_AD_DATES_RETRIEVING
 } ParseSampleEnum;
 
 + (instancetype)sharedSource;
