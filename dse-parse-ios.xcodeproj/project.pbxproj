@@ -533,14 +533,14 @@
 		2B4B7BEA19B68CD7006F7A5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/parseApp.app/parseApp";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/dse-parse-ios.app/dse-parse-ios";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "parseApp/parseApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "parseApp/dse-parse-ios-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -555,14 +555,14 @@
 		2B4B7BEB19B68CD7006F7A5C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/parseApp.app/parseApp";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/dse-parse-ios.app/dse-parse-ios";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "parseApp/parseApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "parseApp/dse-parse-ios-Prefix.pch";
 				INFOPLIST_FILE = "parseAppTests/dse-parse-iosTests-Info.plist";
 				PRODUCT_NAME = "dse-parse-iosTests";
 				TEST_HOST = "$(BUNDLE_LOADER)";
