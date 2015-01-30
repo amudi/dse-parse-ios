@@ -68,7 +68,7 @@ NSString *const PASSWORD = @"alaniOS";
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"ACL Pinning Test"],
+      @"LDS" : @[@"Pinning", @"Query Locally (depends on pinning)", @"Save Locally"],
       @"Pointers": @[@"Cloud Code Pointer Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
       };
@@ -352,6 +352,31 @@ NSString *const PASSWORD = @"alaniOS";
                 }
             }];
             
+            break;
+        }
+        
+        case LDS_QUERY_LOCAL: {
+            PFQuery *aclQ = [PFQuery queryWithClassName:@"ACLTest"];
+            [aclQ fromLocalDatastore];
+            [aclQ whereKey:@"objectId" equalTo:@"mC6nn2MfTI"];
+            [aclQ findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                PFObject *aclTest = objects[0];
+                NSLog(@"Finished querying local datastore, object value is %@", aclTest[@"value"]);
+            }];
+            break;
+        }
+        
+        case LDS_SAVE_LOCAL: {
+            PFQuery *aclQ = [PFQuery queryWithClassName:@"ACLTest"];
+            [aclQ fromLocalDatastore];
+            [aclQ whereKey:@"objectId" equalTo:@"mC6nn2MfTI"];
+            [aclQ findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                PFObject *aclTest = objects[0];
+                NSLog(@"Finished querying local datastore, object value is %@", aclTest[@"value"]);
+                [aclTest setObject:@"99" forKey:@"value"];
+                NSLog(@"Sent for saving");
+                [aclTest saveEventually];
+            }];
             break;
         }
             
