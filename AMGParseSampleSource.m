@@ -16,6 +16,9 @@
 
 @implementation AMGParseSampleSource
 static NSMutableArray *mutableSections = nil;
+NSString *const EMAIL = @"alaniOS@alaniOS.com";
+NSString *const USERNAME = @"alaniOS";
+NSString *const PASSWORD = @"alaniOS";
 
 
 + (instancetype)sharedSource {
@@ -95,10 +98,10 @@ static NSMutableArray *mutableSections = nil;
         case SIGN_UP: {
             NSLog(@"Sign Up!");
             if (![PFUser currentUser]) {
-                PFUser *user = [PFUser user];
-                user.username = @"alan";
-                user.email = @"alan@alan.com";
-                user.password = @"alan";
+                PFUser *user    = [PFUser user];
+                user.username   = USERNAME;
+                user.email      = EMAIL;
+                user.password   = PASSWORD;
                 [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     NSLog(@"Signed up!");
                     [self logUser: user];
@@ -114,8 +117,8 @@ static NSMutableArray *mutableSections = nil;
         case LOGIN: {
             NSLog(@"Login!");
             if (![PFUser currentUser]) {
-                NSString *userName = @"alan";
-                NSString *password = @"alan";
+                NSString *userName = USERNAME;
+                NSString *password = PASSWORD;
                 
                 [PFUser logInWithUsernameInBackground:userName password:password block:^(PFUser *user, NSError *error) {
                     if (user) {
