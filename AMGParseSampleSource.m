@@ -68,7 +68,7 @@ NSString *const PASSWORD = @"alaniOS";
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"Pinning", @"Query Locally (depends on pinning)", @"Save Locally"],
+      @"LDS" : @[@"Pinning", @"Query Locally (depends on pinning)", @"Save Locally", @"Pinning Null, then Querying"],
       @"Pointers": @[@"Cloud Code Pointer Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
       };
@@ -384,6 +384,35 @@ NSString *const PASSWORD = @"alaniOS";
                 [aclTest setObject:@"99" forKey:@"value"];
                 NSLog(@"Sent for saving");
                 [aclTest saveEventually];
+            }];
+            break;
+        }
+            
+        case LDS_PIN_NULL: {
+            NSLog(@"LDS Pinning null!");
+            
+            PFQuery *nullPinQuery = [PFQuery queryWithClassName:@"NullPin"];
+            [nullPinQuery fromLocalDatastore];
+            [nullPinQuery includeKey:@"nullColumn"];
+            [nullPinQuery setLimit:1];
+            
+            [nullPinQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                NSLog(@"Finding nullPinQuery block!");
+                if (!objects || error) {
+                    NSLog(@"Found an issue %@", [error description]);
+                    return;
+                }
+                
+                if (objects.count == 0) {
+                    NSLog(@"nullPinObject created and pinned in the background!");
+                    PFObject *nullPinObject = [PFObject objectWithClassName:@"NullPin"];
+                    [nullPinObject setObject:[NSNull null] forKey:@"nullColumn"];
+                    [nullPinObject saveInBackground];
+                    [nullPinObject pinInBackground];
+                } else {
+                    PFObject *nullPinObject = objects[0];
+                    NSLog(@"Value of column: %@", nullPinObject[@"nullColumn"]);
+                }
             }];
             break;
         }
