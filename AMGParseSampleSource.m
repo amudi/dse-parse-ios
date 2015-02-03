@@ -63,7 +63,7 @@ NSString *const PASSWORD = @"alaniOS";
     
     NSDictionary *samples =
     @{
-      @"Login" : @[@"Sign Up", @"Log In", @"Anonymous Login", @"View Controller Login", @"Facebook", @"Twitter"],
+      @"Login" : @[@"Sign Up", @"Log In", @"Anonymous Login", @"View Controller Login", @"Facebook", @"Twitter", @"Reset Password"],
       @"Events / Analytics" : @[@"Save Installation", @"Save Event"],
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
@@ -224,6 +224,14 @@ NSString *const PASSWORD = @"alaniOS";
                  }];
             }
             
+            break;
+        }
+            
+        case RESET_PASSWORD: {
+            if ([PFUser currentUser]) {
+                NSLog(@"About to reset your password!");
+                [PFUser requestPasswordResetForEmailInBackground:EMAIL];
+            }
             break;
         }
             
