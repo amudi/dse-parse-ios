@@ -103,8 +103,13 @@ NSString *const PASSWORD = @"alaniOS";
                 user.email      = EMAIL;
                 user.password   = PASSWORD;
                 [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    NSLog(@"Signed up!");
-                    [self logUser: user];
+                    if (error == nil) {
+                        NSLog(@"Signed up!");
+                        [self logUser: user];
+                    } else {
+                        NSLog(@"There was an error when Signing Up");
+                        NSLog(@"%@", [error description]);
+                    }
                 }];
                 
             } else {
