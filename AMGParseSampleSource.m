@@ -13,12 +13,15 @@
 #import <ParseUI/ParseUI.h>
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <FacebookSDK/FacebookSDK.h>
 
 @implementation AMGParseSampleSource
 static NSMutableArray *mutableSections = nil;
 NSString *const EMAIL = @"alaniOS@alaniOS.com";
 NSString *const USERNAME = @"alaniOS";
 NSString *const PASSWORD = @"alaniOS";
+NSArray *FB_READ_PERMS_ARRAY = nil;
+NSArray *FB_PUBLISH_PERMS_ARRAY = nil;
 
 
 + (instancetype)sharedSource {
@@ -40,6 +43,8 @@ NSString *const PASSWORD = @"alaniOS";
 - (instancetype)initPrivate {
     self = [super init];
     [self setupSections];
+    FB_READ_PERMS_ARRAY = @[@"user_friends", @"email"];
+    FB_PUBLISH_PERMS_ARRAY = @[@"publish_actions"];
     
     return self;
 }
@@ -59,11 +64,12 @@ NSString *const PASSWORD = @"alaniOS";
  */
 - (void)setupSections {
     mutableSections = [[NSMutableArray alloc] init];
-    NSArray *sections = @[@"Login", @"Events / Analytics", @"ACL", @"PFObjects", @"Queries", @"LDS", @"Pointers", @"Random"];
+    NSArray *sections = @[@"Login", @"Facebook", @"Events / Analytics", @"ACL", @"PFObjects", @"Queries", @"LDS", @"Pointers", @"Random"];
     
     NSDictionary *samples =
     @{
       @"Login" : @[@"Sign Up", @"Log In", @"Anonymous Login", @"View Controller Login", @"Facebook", @"Twitter", @"Reset Password", @"Log out"],
+      @"Facebook" : @[@"See Current Permissions", @"Request publish_actions", @"Publish Random Post"],
       @"Events / Analytics" : @[@"Save Installation", @"Save Event"],
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
@@ -71,7 +77,7 @@ NSString *const PASSWORD = @"alaniOS";
       @"LDS" : @[@"Pinning", @"Query Locally (depends on pinning)", @"Save Locally", @"Pinning Null, then Querying"],
       @"Pointers": @[@"Cloud Code Pointer Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
-      };
+    };
     
     for (NSString *section in sections) {
         AMGParseSection *sectionWrapper = [[AMGParseSection alloc] initWithName:section];
@@ -159,11 +165,8 @@ NSString *const PASSWORD = @"alaniOS";
         case FB_LOGIN: {
             NSLog(@"Starting Facebook Auth");
             
-            // Set permissions required from the facebook user account
-            NSArray *permissionsArray = @[@"user_about_me", @"user_friends"];
-            
             // Login PFUser using Facebook
-            [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
+            [PFFacebookUtils logInWithPermissions:FB_READ_PERMS_ARRAY block:^(PFUser *user, NSError *error) {
                 NSLog(@"Came back from loginWithPermissions! Name is %@", user[@"displayName"]);
                 
                 if (!user) {
@@ -198,7 +201,7 @@ NSString *const PASSWORD = @"alaniOS";
             }];
             break;
         }
-            
+
         case TWITTER_LOGIN: {
             if ([PFUser currentUser]) {
                 [PFTwitterUtils linkUser:[PFUser currentUser] block:^(BOOL succeeded, NSError *error) {
@@ -251,6 +254,43 @@ NSString *const PASSWORD = @"alaniOS";
             } else {
                 [self alertWithMessage:@"Please Log in first." title:@"Parse Log Out"];
             }
+            break;
+        }
+            
+        case FB_CURRENT_PERMISSIONS: {
+            [self alertWithMessage:[NSString stringWithFormat:@"%@", [[PFFacebookUtils session] permissions]] title:@"Current Permissions"];
+            break;
+        }
+            
+        case FB_REQUEST_EXTRA_PERMISSIONS: {
+            if ([[PFFacebookUtils session] isOpen]) {
+                NSLog(@"Session Permissions %@", [[PFFacebookUtils session] permissions]);
+                [[PFFacebookUtils session] requestNewPublishPermissions:FB_PUBLISH_PERMS_ARRAY defaultAudience:FBSessionDefaultAudienceOnlyMe completionHandler:^(FBSession *session, NSError *error) {
+                    if (!error) {
+                        [self alertWithMessage:@"Requested extra permission successfully!" title:@"Request extra permissions"];
+                    }
+                }];
+            } else {
+                [self alertWithMessage:@"Login through Facebook First" title:@"FB Request Extra Perms"];
+            }
+            break;
+        }
+        
+        case FB_PUBLISH_RANDOM_POST: {
+            NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSString stringWithFormat:@"Random Post %@", [NSDate date]], @"message", nil];
+            
+            [FBRequestConnection startWithGraphPath:@"/me/feed"
+                                         parameters:params
+                                         HTTPMethod:@"POST"
+                                  completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                      if (error) {
+                                          NSLog(@"newpost: publish error is: %@", error);
+                                      }
+                                      else {
+                                          [self alertWithMessage:@"Publish success!" title:@"Publish Random Post"];
+                                      }
+            }];
             break;
         }
             
