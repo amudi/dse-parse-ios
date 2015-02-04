@@ -63,7 +63,7 @@ NSString *const PASSWORD = @"alaniOS";
     
     NSDictionary *samples =
     @{
-      @"Login" : @[@"Sign Up", @"Log In", @"Anonymous Login", @"View Controller Login", @"Facebook", @"Twitter", @"Reset Password"],
+      @"Login" : @[@"Sign Up", @"Log In", @"Anonymous Login", @"View Controller Login", @"Facebook", @"Twitter", @"Reset Password", @"Log out"],
       @"Events / Analytics" : @[@"Save Installation", @"Save Event"],
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
@@ -106,6 +106,8 @@ NSString *const PASSWORD = @"alaniOS";
                     if (error == nil) {
                         NSLog(@"Signed up!");
                         [self logUser: user];
+                    } else if ([error code] == 202) {
+                        [self alertWithMessage:@"Name Already Taken. Maybe Login?" title:@"Sign Up"];
                     } else {
                         NSLog(@"There was an error when Signing Up");
                         NSLog(@"%@", [error description]);
@@ -235,7 +237,19 @@ NSString *const PASSWORD = @"alaniOS";
         case RESET_PASSWORD: {
             if ([PFUser currentUser]) {
                 NSLog(@"About to reset your password!");
-                [PFUser requestPasswordResetForEmailInBackground:EMAIL];
+                [PFUser requestPasswordResetForEmailInBackground:EMAIL block:^(BOOL succeeded, NSError *error) {
+                    [self alertWithMessage:@"Password email sent, log out after changing to test" title:@"Password Email"];
+                }];
+            }
+            break;
+        }
+            
+        case LOG_OUT: {
+            if ([PFUser currentUser]) {
+                [PFUser logOut];
+                [self alertWithMessage:@"Log out Successful!" title:@"Parse Log Out"];
+            } else {
+                [self alertWithMessage:@"Please Log in first." title:@"Parse Log Out"];
             }
             break;
         }

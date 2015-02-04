@@ -22,6 +22,7 @@ typedef enum {
     FB_LOGIN,
     TWITTER_LOGIN,
     RESET_PASSWORD,
+    LOG_OUT,
     SAVE_INSTALLATION,
     ANALYTICS_TEST,
     ACL_NEW_FIELD,
