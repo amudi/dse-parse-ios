@@ -265,7 +265,7 @@ NSArray *FB_PUBLISH_PERMS_ARRAY = nil;
         case FB_REQUEST_EXTRA_PERMISSIONS: {
             if ([[PFFacebookUtils session] isOpen]) {
                 NSLog(@"Session Permissions %@", [[PFFacebookUtils session] permissions]);
-                [[PFFacebookUtils session] requestNewPublishPermissions:FB_PUBLISH_PERMS_ARRAY defaultAudience:FBSessionDefaultAudienceOnlyMe completionHandler:^(FBSession *session, NSError *error) {
+                [PFFacebookUtils reauthorizeUser:[PFUser currentUser] withPublishPermissions:FB_PUBLISH_PERMS_ARRAY audience:FBSessionDefaultAudienceOnlyMe block:^(BOOL succeeded, NSError *error){
                     if (!error) {
                         [self alertWithMessage:@"Requested extra permission successfully!" title:@"Request extra permissions"];
                     }
