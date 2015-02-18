@@ -22,6 +22,7 @@ NSString *const USERNAME = @"alaniOS";
 NSString *const PASSWORD = @"alaniOS";
 NSArray *FB_READ_PERMS_ARRAY = nil;
 NSArray *FB_PUBLISH_PERMS_ARRAY = nil;
+bool pinned_first = NO;
 
 
 + (instancetype)sharedSource {
@@ -74,7 +75,7 @@ NSArray *FB_PUBLISH_PERMS_ARRAY = nil;
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"Pinning", @"Query Locally (depends on pinning)", @"Save Locally", @"Pinning Null, then Querying"],
+      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying"],
       @"Pointers": @[@"Cloud Code Pointer Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
     };
@@ -409,6 +410,7 @@ NSArray *FB_PUBLISH_PERMS_ARRAY = nil;
                     }
                     [PFObject pinAllInBackground:objects withName:@"ACLTestObjects" block:^(BOOL succeeded, NSError *error) {
                         if (error == nil) {
+                            pinned_first = YES;
                             NSLog(@"Success when pinning %lu objects to local datastore", (unsigned long)[objects count]);
                         } else {
                             NSLog(@"There was an error when pinning: %@", [error description]);
@@ -421,8 +423,29 @@ NSArray *FB_PUBLISH_PERMS_ARRAY = nil;
             
             break;
         }
+            
+        case LDS_QUERY_ALL: {
+            if (!pinned_first) {
+                [self alertWithMessage:@"Pin First!" title:@"Query All"];
+                return;
+            }
+            
+            PFQuery *aclQ = [PFQuery queryWithClassName:@"ACLTest"];
+            [aclQ fromLocalDatastore];
+            [aclQ findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                for (PFObject *aclTest in objects) {
+                    NSLog(@"id: %@, value: %@", [aclTest objectId], aclTest[@"value"]);
+                }
+            }];
+            break;
+        }
         
         case LDS_QUERY_LOCAL: {
+            if (!pinned_first) {
+                [self alertWithMessage:@"Pin First!" title:@"Query Local"];
+                return;
+            }
+            
             PFQuery *aclQ = [PFQuery queryWithClassName:@"ACLTest"];
             [aclQ fromLocalDatastore];
             [aclQ whereKey:@"objectId" equalTo:@"mC6nn2MfTI"];
@@ -443,6 +466,29 @@ NSArray *FB_PUBLISH_PERMS_ARRAY = nil;
                 [aclTest setObject:@"99" forKey:@"value"];
                 NSLog(@"Sent for saving");
                 [aclTest saveEventually];
+            }];
+            break;
+        }
+            
+        case LDS_DELETE_BACKGROUND: {
+            NSLog(@"Delete In Background!");
+            PFQuery *aclQ = [PFQuery queryWithClassName:@"ACLTest"];
+            [aclQ fromLocalDatastore];
+            [aclQ findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                PFObject *aclTest = objects[0];
+                NSLog(@"Finished querying local datastore, object value is %@", aclTest[@"value"]);
+                
+                [aclTest deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    NSLog(@"Call to deleteInBackground done!");
+                    if (error != nil) {
+                        [self alertWithMessage:[error description] title:@"Delete In Background Failed"];
+                    } else {
+                        [self alertWithMessage:@"Query Locally to verify" title:@"Delete In Background Finished"];
+                    }
+                }];
+                /*
+                [aclTest deleteEventually];
+                */
             }];
             break;
         }
