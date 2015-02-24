@@ -374,7 +374,7 @@ bool pinned_first = NO;
             
             //[PFAnalytics trackEvent:@"action" dimensions:dimensions];
             [PFAnalytics trackEventInBackground:@"action" dimensions:dimensions block:^(BOOL succeeded, NSError *error) {
-                NSLog(@"Tracking Event Finished! Succeeded? %@", succeeded);
+                NSLog(@"Tracking Event Finished! Succeeded? %d", succeeded);
             }];
             
             NSLog(@"Custom Analytics Test Done!");
@@ -423,7 +423,7 @@ bool pinned_first = NO;
             NSLog(@"Refresh User");
             if ([PFUser currentUser]) {
                 [[PFUser currentUser] fetch];
-                NSLog([PFUser currentUser][@"location"]);
+                NSLog(@"%@", [PFUser currentUser][@"location"]);
             }
             break;
         }
