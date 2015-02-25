@@ -75,7 +75,7 @@ bool pinned_first = NO;
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying"],
+      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online"],
       @"Pointers": @[@"Cloud Code Pointer Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
     };
@@ -519,6 +519,36 @@ bool pinned_first = NO;
                     NSLog(@"Value of column: %@", nullPinObject[@"nullColumn"]);
                 }
             }];
+            break;
+        }
+            
+        case LDS_CREATE_PIN_LOCALLY: {
+            NSMutableArray *localObjects = [[NSMutableArray alloc] init];
+            for (int i = 0; i < 5; i++) {
+                PFObject *localPinObject = [PFObject objectWithClassName:@"LocalPinObject"];
+                localPinObject[@"value"] = [NSString stringWithFormat:@"localValue %i", i];
+                [localPinObject saveEventually];
+                [localObjects addObject:localPinObject];
+            }
+            
+            [PFObject pinAllInBackground:localObjects block:^(BOOL succeeded, NSError *error) {
+                [self alertWithMessage:@"Now try counting them!" title:@"LocalPinObject Pinned offline"];
+            }];
+            break;
+        }
+            
+        case LDS_QUERY_PIN_OFFLINE: {
+            PFQuery *localPinQuery = [PFQuery queryWithClassName:@"LocalPinObject"];
+            [localPinQuery fromLocalDatastore];
+            NSInteger localCount = [localPinQuery countObjects];
+            [self alertWithMessage:[NSString stringWithFormat:@"And they are %li", (long)localCount] title:@"LocalPinObject counted offline"];
+            break;
+        }
+            
+        case LDS_QUERY_PIN_ONLINE: {
+            PFQuery *localPinQuery = [PFQuery queryWithClassName:@"LocalPinObject"];
+            NSInteger localCount = [localPinQuery countObjects];
+            [self alertWithMessage:[NSString stringWithFormat:@"And they are %li", (long)localCount] title:@"LocalPinObject counted online"];
             break;
         }
             
