@@ -527,7 +527,13 @@ bool pinned_first = NO;
             for (int i = 0; i < 5; i++) {
                 PFObject *localPinObject = [PFObject objectWithClassName:@"LocalPinObject"];
                 localPinObject[@"value"] = [NSString stringWithFormat:@"localValue %i", i];
-                [localPinObject saveEventually];
+                [localPinObject saveEventually:^(BOOL succeeded, NSError *error) {
+                    if (succeeded) {
+                        NSLog(@"Local object saved eventually successfully!");
+                    } else {
+                        NSLog(@"Local object could not be saved!");
+                    }
+                }];
                 [localObjects addObject:localPinObject];
             }
             
