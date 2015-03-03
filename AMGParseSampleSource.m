@@ -565,11 +565,7 @@ bool pinned_first = NO;
                 
                 NSLog(@"randomColumn Value %@", objectWithPointer[@"randomColumn"]);
                 PFObject *aclTest = objectWithPointer[@"pointer"];
-                NSLog(@"%@", aclTest);
-                NSLog(@"Linked ACLTest objectID %@", aclTest.objectId);
-                [aclTest fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    NSLog(@"fetch in background if needed! %@", object[@"value"]);
-                }];
+                NSLog(@"Linked ACLTest objectID %@, isDataAvailable? %d", aclTest.objectId, [aclTest isDataAvailable]);
             }];
             break;
         }
