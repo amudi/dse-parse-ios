@@ -76,7 +76,7 @@ bool pinned_first = NO;
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
       @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch"],
-      @"Pointers": @[@"Cloud Code Pointer Test"],
+      @"Pointers": @[@"Get Pointer Object Test", @"Get Empty Pointer Object Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
     };
     
@@ -600,6 +600,32 @@ bool pinned_first = NO;
                 NSLog(@"Linked ACLTest objectID %@, isDataAvailable? %d", aclTest.objectId, [aclTest isDataAvailable]);
                 if ([aclTest isDataAvailable]) {
                     NSLog(@"Pointer included value %@", aclTest[@"value"]);
+                }
+            }];
+            break;
+        }
+        
+        case CLOUD_CODE_EMPTY_POINTER_TEST: {
+            NSLog(@"Cloud code empty pointer test");
+            [PFCloud callFunctionInBackground:@"createObjectWithShellPointer" withParameters:@{} block:^(id object, NSError *error) {
+                if (error == nil) {
+                    PFObject *objectWithPointer = (PFObject *)object;
+                
+                    NSLog(@"randomColumn Value %@", objectWithPointer[@"randomColumn"]);
+                    PFObject *aclTest = objectWithPointer[@"pointer"];
+                    NSLog(@"Linked ACLTest objectID %@, isDataAvailable? %d", aclTest.objectId, [aclTest isDataAvailable]);
+                    // Try to log fetched value
+                    if ([aclTest isDataAvailable]) {
+                        NSLog(@"Pointer included value %@", aclTest[@"value"]);
+                    } else {
+                        NSLog(@"There was no data available!");
+                    }
+                    // Try to get necessary data from DB
+                    [aclTest fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                        NSLog(@"fetchedIn Background! Included value %@", object[@"value"]);
+                    }];
+                } else {
+                    [self alertWithMessage:[error description] title:@"Cloud Code Error"];
                 }
             }];
             break;
