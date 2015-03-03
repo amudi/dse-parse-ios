@@ -75,7 +75,7 @@ bool pinned_first = NO;
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online"],
+      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch"],
       @"Pointers": @[@"Cloud Code Pointer Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
     };
@@ -558,6 +558,38 @@ bool pinned_first = NO;
             break;
         }
             
+        case LDS_NESTED_PIN: {
+            NSLog(@"LDS Nested Pin");
+            PFObject *localObject = [PFObject objectWithClassName:@"LocalObject"];
+            localObject[@"value"] = @"I'm local";
+            
+            PFObject *nestedObject = [PFObject objectWithClassName:@"NestedObject"];
+            localObject[@"nested"] = nestedObject;
+            
+            [localObject pinInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                [self alertWithMessage:@"Pinned Successfully!" title:@"Nested Pin"];
+            }];
+            break;
+        }
+            
+        case LDS_NESTED_FETCH: {
+            NSLog(@"LDS Nested Fetch");
+            PFQuery *localSearch = [PFQuery queryWithClassName:@"LocalObject"];
+            [localSearch fromLocalDatastore];
+            
+            [localSearch findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                if (error != nil) {
+                    [self alertWithMessage:[error description] title:@"Nested fetch failed"];
+                } else {
+                    NSLog(@"Found Pinned objects in background!");
+                    for (PFObject *localObject in objects) {
+                        NSLog(@"Value: %@, Nested: %@", localObject[@"value"], localObject[@"nested"]);
+                    }
+                }
+            }];
+            break;
+        }
+            
         case CLOUD_CODE_POINTER_TEST: {
             NSLog(@"Cloud code pointer test");
             [PFCloud callFunctionInBackground:@"createObjectWithPointer" withParameters:@{} block:^(id object, NSError *error) {
@@ -566,6 +598,9 @@ bool pinned_first = NO;
                 NSLog(@"randomColumn Value %@", objectWithPointer[@"randomColumn"]);
                 PFObject *aclTest = objectWithPointer[@"pointer"];
                 NSLog(@"Linked ACLTest objectID %@, isDataAvailable? %d", aclTest.objectId, [aclTest isDataAvailable]);
+                if ([aclTest isDataAvailable]) {
+                    NSLog(@"Pointer included value %@", aclTest[@"value"]);
+                }
             }];
             break;
         }
