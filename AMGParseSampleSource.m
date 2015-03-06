@@ -600,7 +600,13 @@ bool pinned_first = NO;
                 [usersRelation addObject:[PFUser currentUser]];
                 [objectWithUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (error == nil) {
-                        [objectWithUser pinInBackground];
+                        [objectWithUser pinInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                            if (error == nil) {
+                                NSLog(@"User Pinning success? %i", succeeded);
+                            } else {
+                                NSLog(@"Pinning of user failed: %@", [error description]);
+                            }
+                        }];
                         [self alertWithMessage:@"ObjectWithUser Saved Online and Pinned to LDS" title:@"Success!"];
                     } else {
                         [self alertWithMessage:[error description] title:@"Error saving ObjectWithUser!"];
@@ -618,6 +624,7 @@ bool pinned_first = NO;
                 PFQuery *owuQuery = [PFQuery queryWithClassName:@"ObjectWithUser"];
                 [owuQuery whereKey:@"users" equalTo:[PFUser currentUser]];
                 [owuQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    [self alertWithMessage:[NSString stringWithFormat:@"Found %lu", (unsigned long)[objects count]] title:@"Online Fetch Callback"];
                     if (error == nil) {
                         for (PFObject *objectWithUser in objects) {
                             NSLog(@"Object Id %@", objectWithUser.objectId);
@@ -645,7 +652,7 @@ bool pinned_first = NO;
                 [owuQuery fromLocalDatastore];
                 [owuQuery whereKey:@"users" equalTo:[PFUser currentUser]];
                 [owuQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                    NSLog(@"Got back from local fetch!");
+                    [self alertWithMessage:[NSString stringWithFormat:@"Found %lu", (unsigned long)[objects count]] title:@"Local Fetch Callback"];
                     if (error == nil) {
                         for (PFObject *objectWithUser in objects) {
                             NSLog(@"Object Id %@", objectWithUser.objectId);
