@@ -75,7 +75,7 @@ bool pinned_first = NO;
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch"],
+      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch", @"User Relation Create", @"User Relation Online Fetch", @"User Relation Local Fetch"],
       @"Pointers": @[@"Get Pointer Object Test", @"Get Empty Pointer Object Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
     };
@@ -136,13 +136,14 @@ bool pinned_first = NO;
                 
                 [PFUser logInWithUsernameInBackground:userName password:password block:^(PFUser *user, NSError *error) {
                     if (user) {
+                        [self alertWithMessage:@"Logged In!" title:@"Success"];
                         NSLog(@"logged in successfully!");
                     } else {
-                        NSLog(@"No user logged in!");
+                        [self alertWithMessage:[error description] title:@"Login Failed!"];
                     }
                 }];
             } else {
-                NSLog(@"Already logged in, not doing it");
+                [self alertWithMessage:@"Was Already Logged In!" title:@"Success?"];
             }
             break;
         }
@@ -587,6 +588,81 @@ bool pinned_first = NO;
                     }
                 }
             }];
+            break;
+        }
+            
+        case LDS_USER_RELATION_CREATE: {
+            NSLog(@"User relation object create!");
+            if ([PFUser currentUser]) {
+                PFObject *objectWithUser = [PFObject objectWithClassName:@"ObjectWithUser"];
+                objectWithUser[@"column"] = @"I want User!";
+                PFRelation *usersRelation = [objectWithUser relationForKey:@"users"];
+                [usersRelation addObject:[PFUser currentUser]];
+                [objectWithUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (error == nil) {
+                        [objectWithUser pinInBackground];
+                        [self alertWithMessage:@"ObjectWithUser Saved Online and Pinned to LDS" title:@"Success!"];
+                    } else {
+                        [self alertWithMessage:[error description] title:@"Error saving ObjectWithUser!"];
+                    }
+                }];
+            } else {
+                [self alertWithMessage:@"Log in first!" title:@"Can't create relation"];
+            }
+            break;
+        }
+            
+        case LDS_USER_RELATION_ONLINE_FETCH: {
+            NSLog(@"User relation online fetch!");
+            if ([PFUser currentUser]) {
+                PFQuery *owuQuery = [PFQuery queryWithClassName:@"ObjectWithUser"];
+                [owuQuery whereKey:@"users" equalTo:[PFUser currentUser]];
+                [owuQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    if (error == nil) {
+                        for (PFObject *objectWithUser in objects) {
+                            NSLog(@"Object Id %@", objectWithUser.objectId);
+                            PFRelation *users = objectWithUser[@"users"];
+                            PFQuery *all = [users query];
+                            NSArray *allResult = [all findObjects];
+                            for (PFObject *result in allResult) {
+                                NSLog(@"User Id in relation: %@", result.objectId);
+                            }
+                        }
+                    } else {
+                        [self alertWithMessage:[error description] title:@"Error online query!"];
+                    }
+                }];
+            } else {
+                [self alertWithMessage:@"Log in first!" title:@"Can't online query"];
+            }
+            break;
+        }
+            
+        case LDS_USER_RELATION_LOCAL_FETCH: {
+            NSLog(@"User relation local fetch!");
+            if ([PFUser currentUser]) {
+                PFQuery *owuQuery = [PFQuery queryWithClassName:@"ObjectWithUser"];
+                [owuQuery fromLocalDatastore];
+                [owuQuery whereKey:@"users" equalTo:[PFUser currentUser]];
+                [owuQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    NSLog(@"Got back from local fetch!");
+                    if (error == nil) {
+                        for (PFObject *objectWithUser in objects) {
+                            NSLog(@"Object Id %@", objectWithUser.objectId);
+                            PFRelation *users = objectWithUser[@"users"];
+                            PFQuery *all = [users query];
+                            NSArray *allResult = [all findObjects];
+                            for (PFObject *result in allResult) {
+                                NSLog(@"User Id in relation: %@", result.objectId);
+                            }
+                        }
+                    } else {
+                        [self alertWithMessage:[error description] title:@"Error online query!"];
+                    }
+                }];
+            } else {
+                [self alertWithMessage:@"Log in first!" title:@"Can't online query"];
+            }
             break;
         }
             
