@@ -75,7 +75,7 @@ bool pinned_first = NO;
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
       @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"Pinning", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch", @"User Relation Create", @"User Relation Online Fetch", @"User Relation Local Fetch"],
+      @"LDS" : @[@"Pinning", @"Pin With Name",@"Query Pin With Name", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch", @"User Relation Create", @"User Relation Online Fetch", @"User Relation Local Fetch"],
       @"Pointers": @[@"Get Pointer Object Test", @"Get Empty Pointer Object Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
     };
@@ -424,7 +424,38 @@ bool pinned_first = NO;
             
             break;
         }
+        
+        case LDS_PIN_WITH_NAME: {
+            NSLog(@"Pinning with name!");
+            PFObject *localObject = [PFObject objectWithClassName:@"NamePinnedObject"];
+            localObject[@"value"] = @"I'm local!";
+            [localObject pinInBackgroundWithName:@"namePin" block:^(BOOL succeeded, NSError *error) {
+                if (error == nil) {
+                    [self alertWithMessage:[NSString stringWithFormat:@"Status: %i", succeeded] title:@"Name Pinning Finished"];
+                } else {
+                    [self alertWithMessage:[error description] title:@"Name Pinning Failed"];
+                }
+            }];
+            break;
+        }
             
+        case LDS_QUERY_PIN_WITH_NAME: {
+            NSLog(@"Querying Pin with name!");
+            PFQuery *pinQuery = [PFQuery queryWithClassName:@"NamedPinnedObject"];
+            [pinQuery fromPinWithName:@"namePin"];
+            [pinQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                if (error == nil) {
+                    NSLog(@"Found %lu objects", (unsigned long)[objects count]);
+                    for (PFObject *local in objects) {
+                        NSLog(@"id:%@ value:%@", local.objectId, local[@"value"]);
+                    }
+                } else {
+                    [self alertWithMessage:[error description] title:@"Name Pinning Failed"];
+                }
+            }];
+            break;
+        }
+
         case LDS_QUERY_ALL: {
             if (!pinned_first) {
                 [self alertWithMessage:@"Pin First!" title:@"Query All"];
