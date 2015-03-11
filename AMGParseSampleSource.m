@@ -70,7 +70,7 @@ bool pinned_first = NO;
     NSDictionary *samples =
     @{
       @"Login" : @[@"Sign Up", @"Log In", @"Anonymous Login", @"View Controller Login", @"Facebook", @"Twitter", @"Reset Password", @"Log out"],
-      @"Facebook" : @[@"See Current Permissions", @"Request publish_actions", @"Publish Random Post"],
+      @"Facebook" : @[@"See Current Permissions", @"Request publish_actions", @"Publish Random Post", @"OpenGraph Post"],
       @"Events / Analytics" : @[@"Save Installation", @"Save Event"],
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
@@ -292,6 +292,57 @@ bool pinned_first = NO;
                                       else {
                                           [self alertWithMessage:@"Publish success!" title:@"Publish Random Post"];
                                       }
+            }];
+            break;
+        }
+            
+        case FB_OG_POST: {
+            NSLog(@"OpenGraph POST!");
+            UIImage *snoopy = [UIImage imageNamed:@"snoopy.png"];
+            [FBRequestConnection
+             startForUploadStagingResourceWithImage:snoopy
+             completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if(!error) {
+                    // Log the uri of the staged image
+                    [self alertWithMessage:[result objectForKey:@"uri"] title:@"Image Staging Success!"];
+                    NSLog(@"Picture URI: %@", [result objectForKey:@"uri"]);
+                    NSMutableDictionary<FBOpenGraphObject> *object = [FBGraphObject openGraphObjectForPost];
+                    object.provisionedForPost = YES;
+                    object[@"title"] = @"Death by Hug";
+                    object[@"type"] = @"alanmgsandbox:accident";
+                    object[@"description"] = [NSString stringWithFormat:@"Snoopy choked Woodstock with Love. %@", [NSDate date]];
+                    object[@"image"] = @[@{@"url": [result objectForKey:@"uri"], @"user_generated" : @"true" }];
+                    
+                    // Post custom object
+                    [FBRequestConnection
+                     startForPostOpenGraphObject:object
+                     completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                        if(!error) {
+                            NSString *objectId = [result objectForKey:@"id"];
+                            NSLog(@"object id: %@", objectId);
+                            id<FBOpenGraphAction> action = (id<FBOpenGraphAction>)[FBGraphObject graphObject];
+                            [action setObject:objectId forKey:@"dish"];
+                            [FBRequestConnection
+                             startForPostWithGraphPath:@"/me/alanmgsandbox:photograph"
+                             graphObject:action
+                             completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                if(!error) {
+                                    NSLog(@"OG story posted, story id: %@", [result objectForKey:@"id"]);
+                                    [self alertWithMessage:@"Check your Facebook profile or activity log to see the story." title:@"OG story posted"];
+                                } else {
+                                    // An error occurred
+                                    [self alertWithMessage:[error description] title:@"Error Posting to Open Graph"];
+                                }
+                            }];
+                        } else {
+                            // An error occurred
+                            NSLog(@"Error posting the Open Graph object to the Object API: %@", error);
+                        }
+                    }];
+                } else {
+                    // An error occurred
+                    [self alertWithMessage:[error description] title:@"Image Staging Failed"];
+                }
             }];
             break;
         }
@@ -843,5 +894,4 @@ bool pinned_first = NO;
     
     [alert show];
 }
-
 @end

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B044B211AAFBA960008E402 /* snoopy.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B044B201AAFBA960008E402 /* snoopy.png */; };
 		2B1339BA1A51FDA400C25370 /* ACLTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1339B91A51FDA400C25370 /* ACLTest.m */; };
 		2B38DBA71A378A41006A5437 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B38DBA61A378A41006A5437 /* libsqlite3.0.dylib */; };
 		2B4B7BBE19B68CD7006F7A5C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B4B7BBD19B68CD7006F7A5C /* Foundation.framework */; };
@@ -56,6 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2B044B201AAFBA960008E402 /* snoopy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snoopy.png; sourceTree = "<group>"; };
 		2B1339B81A51FDA400C25370 /* ACLTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACLTest.h; sourceTree = "<group>"; };
 		2B1339B91A51FDA400C25370 /* ACLTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACLTest.m; sourceTree = "<group>"; };
 		2B38DBA61A378A41006A5437 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
@@ -147,6 +149,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B044B1F1AAFBA8A0008E402 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2B044B201AAFBA960008E402 /* snoopy.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		2B1339B71A51FD1800C25370 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,6 +236,7 @@
 		2B4B7BC319B68CD7006F7A5C /* dse-parse-ios */ = {
 			isa = PBXGroup;
 			children = (
+				2B044B1F1AAFBA8A0008E402 /* Resources */,
 				2B1339BB1A51FF3000C25370 /* Views */,
 				2B1339B71A51FD1800C25370 /* Classes */,
 				2B4B7BCC19B68CD7006F7A5C /* AMGAppDelegate.h */,
@@ -346,6 +357,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B044B211AAFBA960008E402 /* snoopy.png in Resources */,
 				2B4B7BC819B68CD7006F7A5C /* InfoPlist.strings in Resources */,
 				2B4B7BD019B68CD7006F7A5C /* Images.xcassets in Resources */,
 			);
