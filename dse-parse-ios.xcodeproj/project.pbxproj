@@ -44,6 +44,8 @@
 		2BE6A10C1A572C14008F7704 /* ParseCrashReporting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BE6A1071A572C14008F7704 /* ParseCrashReporting.framework */; };
 		2BE6A10D1A572C14008F7704 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BE6A1081A572C14008F7704 /* ParseFacebookUtils.framework */; };
 		2BE6A10E1A572C14008F7704 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BE6A1091A572C14008F7704 /* ParseUI.framework */; };
+		D0C506AD1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C506AB1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.m */; };
+		D0C506AE1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0C506AC1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,9 @@
 		2BE6A1071A572C14008F7704 /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseCrashReporting.framework; sourceTree = "<group>"; };
 		2BE6A1081A572C14008F7704 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		2BE6A1091A572C14008F7704 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		D0C506AA1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSLocalDataStorePlaygroundViewController.h; sourceTree = "<group>"; };
+		D0C506AB1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSLocalDataStorePlaygroundViewController.m; sourceTree = "<group>"; };
+		D0C506AC1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AMSLocalDataStorePlaygroundViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				2B044B1F1AAFBA8A0008E402 /* Resources */,
+				D0C506A91A9EEF0F00C90613 /* ViewController */,
 				2B1339BB1A51FF3000C25370 /* Views */,
 				2B1339B71A51FD1800C25370 /* Classes */,
 				2B4B7BCC19B68CD7006F7A5C /* AMGAppDelegate.h */,
@@ -276,6 +282,16 @@
 				2B4B7BDF19B68CD7006F7A5C /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D0C506A91A9EEF0F00C90613 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				D0C506AA1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.h */,
+				D0C506AB1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.m */,
+				D0C506AC1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.xib */,
+			);
+			name = ViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,6 +375,7 @@
 			files = (
 				2B044B211AAFBA960008E402 /* snoopy.png in Resources */,
 				2B4B7BC819B68CD7006F7A5C /* InfoPlist.strings in Resources */,
+				D0C506AE1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.xib in Resources */,
 				2B4B7BD019B68CD7006F7A5C /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +400,7 @@
 				2B4B7BCA19B68CD7006F7A5C /* main.m in Sources */,
 				2BA5998D1A609FA600702947 /* AMGTableViewController.m in Sources */,
 				2BA599991A6463FA00702947 /* AMGParseSampleSource.m in Sources */,
+				D0C506AD1A9EEF5400C90613 /* AMSLocalDataStorePlaygroundViewController.m in Sources */,
 				2BA599961A60B3CB00702947 /* AMGParseSample.m in Sources */,
 				2BA599901A60AAD200702947 /* AMGParseSection.m in Sources */,
 			);

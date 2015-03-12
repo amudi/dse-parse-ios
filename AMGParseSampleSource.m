@@ -74,8 +74,8 @@ bool pinned_first = NO;
       @"Events / Analytics" : @[@"Save Installation", @"Save Event"],
       @"ACL" : @[@"Add New Field", @"Update Existing Field", @"ACL Test Query"],
       @"PFObjects" : @[@"Save PFUser Property", @"Refresh User"],
-      @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test"],
-      @"LDS" : @[@"Pinning", @"Pin With Name",@"Query Pin With Name", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch", @"User Relation Create", @"User Relation Online Fetch", @"User Relation Local Fetch"],
+      @"Queries" : @[@"Get First Object", @"Get First, using class", @"Compound Query Test", @"Memory Usage"],
+      @"LDS" : @[@"Pinning", @"Pin With Name",@"Query Pin With Name", @"Query All Locally (Pin First)", @"Query Locally (Pin First)", @"Save Locally", @"Delete In Background", @"Pinning Null, then Querying", @"Save and Pin LocalPinObjects", @"Count LocalPinObjects, offline", @"Count LocalPinObjects, online", @"LDS Nested Pin", @"LDS Nested Fetch", @"User Relation Create", @"User Relation Online Fetch", @"User Relation Local Fetch", @"LDS add/deleteEventually Playground"],
       @"Pointers": @[@"Get Pointer Object Test", @"Get Empty Pointer Object Test"],
       @"Random" : @[@"BC / AD Dates Saving", @"BC / AD Dates Retrieving"]
     };
@@ -449,6 +449,13 @@ bool pinned_first = NO;
             
         case QUERY_COMPOUND: {
             [self alertWithMessage:@"Not Implemented" title:@"Compound Query Test"];
+            break;
+        }
+            
+        case QUERY_MEMORY_USAGE_TEST: {
+            PFQuery *query = [PFQuery queryWithClassName:@"TestClass"];
+            NSArray *result = [query findObjects];
+            NSLog(@"result: %@", result);
             break;
         }
             
@@ -851,6 +858,9 @@ bool pinned_first = NO;
             break;
         }
 
+        case LDS_CUSTOM_ADD_DELETE_EVENTUALLY: {
+            break;
+        }
         default:
             NSLog(@"Unknown sample code to exeute!");
             break;

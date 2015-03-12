@@ -10,6 +10,7 @@
 #import "AMGParseSample.h"
 #import "AMGParseSection.h"
 #import "AMGParseSampleSource.h"
+#import "AMSLocalDataStorePlaygroundViewController.h"
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 
@@ -86,8 +87,14 @@
                 [self presentViewController:loginViewController animated:YES completion:NULL];
             }
             break;
+        case LDS_CUSTOM_ADD_DELETE_EVENTUALLY: {
+            AMSLocalDataStorePlaygroundViewController *vc = [[AMSLocalDataStorePlaygroundViewController alloc] initWithNibName:@"AMSLocalDataStorePlaygroundViewController" bundle:nil];
+            [self.navigationController pushViewController:vc animated:YES];
+            break;
+        }
             
         default:
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
             [sampleWrapper execute:accumulatedLength];
             break;
     }
